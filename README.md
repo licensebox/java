@@ -37,7 +37,7 @@ try (var client = new dev.licensebox.Client(options)) {
 ```
 
 Build/install locally with `mvn install`, then depend on
-`dev.licensebox:licensebox:0.1.1`. This is a GitHub release, not a claim of Maven
+`dev.licensebox:licensebox:0.2.0`. This is a GitHub release, not a claim of Maven
 Central publication. Results are owned Gson JSON values. Catch
 `Client.LicenseboxException` and inspect `code`. Use try-with-resources; a Cleaner
 also releases abandoned handles. Calls and close are synchronized. Kotlin, Scala and Clojure each run the shared licensing suite in CI.
