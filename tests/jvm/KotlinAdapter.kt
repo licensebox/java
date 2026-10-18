@@ -22,6 +22,9 @@ fun main() {
                 "lease" -> c.lease(); "status" -> c.status(); "sign_in" -> c.signIn(3.0)
                 "require" -> c.require(if(r.has("module")) s("module") else "core")
                 "repeat" -> {c.require("core");c.require("core")}
+                "heartbeat" -> c.heartbeat(if(r.has("module")) s("module") else "core")
+                "heartbeat-repeat" -> {c.heartbeat("core");c.heartbeat("core")}
+                "heartbeat-after-require" -> {c.require("core");c.heartbeat("core")}
                 "logout" -> {c.logout();JsonNull.INSTANCE}
                 "modules" -> c.modules(); "requests" -> c.requests()
                 "request" -> c.requestAccess(listOf("export"),"café – test")

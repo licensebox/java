@@ -16,6 +16,9 @@ public class Adapter {
                 case "lease":return c.lease();case "status":return c.status();case "sign_in":return c.signIn(3);
                 case "require":return c.require(r.has("module")?s(r,"module"):"core");
                 case "repeat":c.require("core");return c.require("core");
+                case "heartbeat":return c.heartbeat(r.has("module")?s(r,"module"):"core");
+                case "heartbeat-repeat":c.heartbeat("core");return c.heartbeat("core");
+                case "heartbeat-after-require":c.require("core");return c.heartbeat("core");
                 case "logout":c.logout();return JsonNull.INSTANCE;
                 case "modules":return c.modules();case "requests":return c.requests();
                 case "request":return c.requestAccess(Collections.singletonList("export"),"café – test");

@@ -23,6 +23,9 @@ object ScalaAdapter {
         case "lease" => c.lease();case "status" => c.status();case "sign_in" => c.signIn(3)
         case "require" => c.require(if(r.has("module"))s("module") else "core")
         case "repeat" => c.require("core");c.require("core")
+        case "heartbeat" => c.heartbeat(if(r.has("module"))s("module") else "core")
+        case "heartbeat-repeat" => c.heartbeat("core");c.heartbeat("core")
+        case "heartbeat-after-require" => c.require("core");c.heartbeat("core")
         case "logout" => c.logout();JsonNull.INSTANCE
         case "modules" => c.modules();case "requests" => c.requests()
         case "request" => c.requestAccess(java.util.Collections.singletonList("export"),"café – test")

@@ -7,4 +7,5 @@ java -cp "$cp" org.jetbrains.kotlin.cli.jvm.K2JVMCompiler -no-stdlib -no-reflect
 java -cp "$cp" scala.tools.nsc.Main -usejavacp -d target/scala tests/jvm/ScalaAdapter.scala
 for language in kotlin scala clojure; do
   python3 ../protocol/conformance/run.py --adapter bash "ci/$language-adapter.sh"
+  python3 ../protocol/conformance/heartbeat.py --adapter bash "ci/$language-adapter.sh"
 done
