@@ -1,0 +1,37 @@
+(import '(dev.licensebox Client Client$Config Client$LicenseboxException)
+        '(com.google.gson JsonParser JsonObject JsonNull JsonPrimitive)
+        '(java.util LinkedHashMap Collections)
+        '(java.util.function DoubleSupplier Supplier BiConsumer))
+(let [r (.getAsJsonObject (JsonParser/parseString (slurp *in*)))
+      s (fn [n] (if (.has r n) (.getAsString (.get r n)) ""))
+      product (s "product")
+      keys (LinkedHashMap.)
+      answer (JsonObject.)]
+  (when (.has r "keys")
+    (doseq [e (.entrySet (.getAsJsonObject r "keys"))] (.put keys (.getKey e) (.getAsString (.getValue e)))))
+  (try
+    (let [value
+      (case (s "op")
+        "derive" (JsonPrimitive. (Client/deriveBinding product (s "source") (s "raw_id")))
+        "native" (JsonPrimitive. (Client/nativeBinding product))
+        "verify" (Client/verifyLease (s "token") product keys (.getAsDouble (.get r "now")))
+        (let [cfg (Client$Config. product keys)]
+          (set! (.server cfg) (s "server"))
+          (set! (.directory cfg) (s "directory"))
+          (set! (.version cfg) "conformance")
+          (set! (.clock cfg) (reify DoubleSupplier (getAsDouble [_] (.getAsDouble (.get r "now")))))
+          (set! (.machineBinding cfg) (reify Supplier (get [_] (s "binding"))))
+          (set! (.onSignIn cfg) (reify BiConsumer (accept [_ _ _] nil)))
+          (with-open [c (Client. cfg)]
+            (case (s "op")
+              "lease" (.lease c) "status" (.status c) "sign_in" (.signIn c 3.0)
+              "require" (.require c (if (.has r "module") (s "module") "core"))
+              "repeat" (do (.require c "core") (.require c "core"))
+              "logout" (do (.logout c) JsonNull/INSTANCE)
+              "modules" (.modules c) "requests" (.requests c)
+              "request" (.requestAccess c (Collections/singletonList "export") "café – test")
+              "access-link" (JsonPrimitive. (.accessLink c))
+              "record" (do (.record c "export" true 0.125) (.record c "export" false 0.025) JsonNull/INSTANCE))))) ]
+      (.add answer "value" value) (.addProperty answer "ok" true))
+    (catch Client$LicenseboxException e (.addProperty answer "ok" false) (.addProperty answer "error" (.code e))))
+  (println (.toString answer)))

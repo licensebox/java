@@ -37,11 +37,10 @@ try (var client = new dev.licensebox.Client(options)) {
 ```
 
 Build/install locally with `mvn install`, then depend on
-`dev.licensebox:licensebox:0.1.0`. This is a GitHub release, not a claim of Maven
+`dev.licensebox:licensebox:0.1.1`. This is a GitHub release, not a claim of Maven
 Central publication. Results are owned Gson JSON values. Catch
 `Client.LicenseboxException` and inspect `code`. Use try-with-resources; a Cleaner
-also releases abandoned handles. Calls and close are synchronized. JVM language
-adapters/examples are tracked in the roadmap.
+also releases abandoned handles. Calls and close are synchronized. Kotlin, Scala and Clojure each run the shared licensing suite in CI.
 
 
 Create one client per process. The complete API includes lease, require, local
@@ -84,3 +83,11 @@ and [integration docs](https://licensebox.dev/docs). Administration remains in
 the [Go CLI](https://github.com/licensebox/go) and web console.
 
 MIT. Copyright © 2026 [Vijai Kumar](https://meshing.engineer).
+
+## Kotlin, Scala and Clojure
+
+All JVM languages consume this same Java library and its full public API.
+Kotlin `use`, Scala `try/finally` and Clojure `with-open` close the native client.
+The executable adapters in `tests/jvm/` show each operation and callback setup.
+Each language is compiled or loaded and runs all shared licensing scenarios in CI.
+Kotlin/Scala compilers and Clojure are test dependencies only.
