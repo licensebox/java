@@ -4,7 +4,7 @@ Application licensing backed by the shared C core: native machine identity,
 email sign-in, signed offline leases, silent renewal, module access, approval
 requests and usage reporting. Linux is the initial runtime target.
 
-Requirements: Java 11+, JNA 5.18.1 and Gson 2.13.2; Licensebox C >=0.2.0, OpenSSL 3, libcurl 7.85+ and
+Requirements: Java 11+, JNA 5.18.1 and Gson 2.13.2; Licensebox C >=0.5.0, OpenSSL 3.5+, libcurl 7.85+ and
 json-c. The native dependency is pinned in `native-version.txt` and updated by
 the tested contract-sync workflow. No native code is downloaded at runtime.
 
@@ -37,7 +37,7 @@ try (var client = new dev.licensebox.Client(options)) {
 ```
 
 Build/install locally with `mvn install`, then depend on
-`dev.licensebox:licensebox:0.2.0`. This is a GitHub release, not a claim of Maven
+`dev.licensebox:licensebox:0.3.0`. This is a GitHub release, not a claim of Maven
 Central publication. Results are owned Gson JSON values. Catch
 `Client.LicenseboxException` and inspect `code`. Use try-with-resources; a Cleaner
 also releases abandoned handles. Calls and close are synchronized. Kotlin, Scala and Clojure each run the shared licensing suite in CI.
