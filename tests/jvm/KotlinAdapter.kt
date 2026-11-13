@@ -13,6 +13,7 @@ fun main() {
         }
         val cfg=Client.Config(product,keys).apply {
             server=s("server"); directory=s("directory"); version="conformance"
+            if(r.has("enrol_token")) enrolToken=s("enrol_token")
             clock=java.util.function.DoubleSupplier { r["now"].asDouble }
             machineBinding=java.util.function.Supplier { s("binding") }
             onSignIn=java.util.function.BiConsumer { _,_ -> }
@@ -29,6 +30,9 @@ fun main() {
                 "modules" -> c.modules(); "requests" -> c.requests()
                 "request" -> c.requestAccess(listOf("export"),"café – test")
                 "access-link" -> JsonPrimitive(c.accessLink())
+                "enrol" -> c.enrol(s("token"))
+                "checkout" -> c.checkout(s("module"))
+                "checkin" -> {c.checkin(s("module"));JsonNull.INSTANCE}
                 "record" -> {c.record("export",true,.125);c.record("export",false,.025);JsonNull.INSTANCE}
                 else -> error("unknown operation")
             }

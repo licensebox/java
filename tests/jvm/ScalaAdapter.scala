@@ -17,6 +17,7 @@ object ScalaAdapter {
       }
       val cfg=new Client.Config(product,keys)
       cfg.server=s("server");cfg.directory=s("directory");cfg.version="conformance"
+      if(r.has("enrol_token"))cfg.enrolToken=s("enrol_token")
       cfg.clock=()=>r.get("now").getAsDouble;cfg.machineBinding=()=>s("binding");cfg.onSignIn=(_,_)=>()
       val c=new Client(cfg)
       try s("op") match {
@@ -30,6 +31,9 @@ object ScalaAdapter {
         case "modules" => c.modules();case "requests" => c.requests()
         case "request" => c.requestAccess(java.util.Collections.singletonList("export"),"café – test")
         case "access-link" => new JsonPrimitive(c.accessLink())
+        case "enrol" => c.enrol(s("token"))
+        case "checkout" => c.checkout(s("module"))
+        case "checkin" => c.checkin(s("module"));JsonNull.INSTANCE
         case "record" => c.record("export",true,.125);c.record("export",false,.025);JsonNull.INSTANCE
         case _ => throw new IllegalArgumentException("unknown operation")
       } finally c.close()

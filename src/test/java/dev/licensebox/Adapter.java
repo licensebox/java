@@ -10,7 +10,7 @@ public class Adapter {
         if(op.equals("derive"))return new JsonPrimitive(Client.deriveBinding(product,s(r,"source"),s(r,"raw_id")));
         if(op.equals("native"))return new JsonPrimitive(Client.nativeBinding(product));
         if(op.equals("verify"))return Client.verifyLease(s(r,"token"),product,keys,r.get("now").getAsDouble());
-        Client.Config cfg=new Client.Config(product,keys);cfg.server=s(r,"server");cfg.directory=s(r,"directory");cfg.version="conformance";cfg.clock=()->r.get("now").getAsDouble();cfg.machineBinding=()->s(r,"binding");cfg.onSignIn=(u,c)->{};
+        Client.Config cfg=new Client.Config(product,keys);cfg.server=s(r,"server");cfg.directory=s(r,"directory");cfg.version="conformance";if(r.has("enrol_token"))cfg.enrolToken=s(r,"enrol_token");cfg.clock=()->r.get("now").getAsDouble();cfg.machineBinding=()->s(r,"binding");cfg.onSignIn=(u,c)->{};
         try(Client c=new Client(cfg)) {
             switch(op) {
                 case "lease":return c.lease();case "status":return c.status();case "sign_in":return c.signIn(3);
@@ -23,6 +23,9 @@ public class Adapter {
                 case "modules":return c.modules();case "requests":return c.requests();
                 case "request":return c.requestAccess(Collections.singletonList("export"),"café – test");
                 case "access-link":return new JsonPrimitive(c.accessLink());
+                case "enrol":return c.enrol(s(r,"token"));
+                case "checkout":return c.checkout(s(r,"module"));
+                case "checkin":c.checkin(s(r,"module"));return JsonNull.INSTANCE;
                 case "record":c.record("export",true,.125);c.record("export",false,.025);return JsonNull.INSTANCE;
                 default:throw new IllegalArgumentException("unknown operation");
             }

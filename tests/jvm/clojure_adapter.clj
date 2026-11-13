@@ -19,6 +19,7 @@
           (set! (.server cfg) (s "server"))
           (set! (.directory cfg) (s "directory"))
           (set! (.version cfg) "conformance")
+          (when (.has r "enrol_token") (set! (.enrolToken cfg) (s "enrol_token")))
           (set! (.clock cfg) (reify DoubleSupplier (getAsDouble [_] (.getAsDouble (.get r "now")))))
           (set! (.machineBinding cfg) (reify Supplier (get [_] (s "binding"))))
           (set! (.onSignIn cfg) (reify BiConsumer (accept [_ _ _] nil)))
@@ -34,6 +35,9 @@
               "modules" (.modules c) "requests" (.requests c)
               "request" (.requestAccess c (Collections/singletonList "export") "café – test")
               "access-link" (JsonPrimitive. (.accessLink c))
+              "enrol" (.enrol c (s "token"))
+              "checkout" (.checkout c (s "module"))
+              "checkin" (do (.checkin c (into-array String [(s "module")])) JsonNull/INSTANCE)
               "record" (do (.record c "export" true 0.125) (.record c "export" false 0.025) JsonNull/INSTANCE))))) ]
       (.add answer "value" value) (.addProperty answer "ok" true))
     (catch Client$LicenseboxException e (.addProperty answer "ok" false) (.addProperty answer "error" (.code e))))
